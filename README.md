@@ -51,3 +51,18 @@ This is **Phase 1**, where the focus is on:
 2. Install the required libraries:
    ```bash
    pip install yfinance matplotlib
+
+---
+
+👨‍💻 Author
+
+Tanishq Chhabra
+Just getting started. IntelliTrade may take months or years to complete — but it’s happening. 🚀
+
+---
+
+## 📌 License
+
+**All rights reserved.**
+
+This is a personal project by Tanishq Chhabra. You may not copy, modify, distribute, or reuse any part of this code or content without explicit written permission from the author.
