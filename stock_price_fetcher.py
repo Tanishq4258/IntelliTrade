@@ -1,3 +1,6 @@
+# © 2024 Tanishq Chhabra. All rights reserved.
+# Made by Tanishq Chhabra for IntelliTrade Project
+
 import yfinance as yf
 
 stock_symbol = input("Enter Name of stock you want the Live value for: ")

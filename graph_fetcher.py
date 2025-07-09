@@ -1,3 +1,6 @@
+# © 2024 Tanishq Chhabra. All rights reserved.
+# Made by Tanishq Chhabra for IntelliTrade Project
+
 import yfinance as yf
 import matplotlib.pyplot as plt
 
