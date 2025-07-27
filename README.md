@@ -20,7 +20,7 @@ This is **Phase 1**, where the initial focus is on:
 
 ## 📊 Sample Output
 
-*(Sample output will be added here once the visualization is more robust and representative of the project's potential. This will likely include screenshots of generated stock charts, potentially located at `images/sample_chart.png`.)*
+![Sample Stock Chart](images/sample_chart.png)
 
 ---
 
