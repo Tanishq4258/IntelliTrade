@@ -57,6 +57,7 @@ This is **Phase 1**, where the focus is on:
 👨‍💻 Author
 
 Tanishq Chhabra
+
 Just getting started. IntelliTrade may take months or years to complete — but it’s happening. 🚀
 
 ---
