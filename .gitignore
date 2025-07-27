@@ -1,0 +1,23 @@
+# Python virtual environment
+venv/
+.venv/
+
+# Byte-code files
+*.pyc
+__pycache__/
+
+# IDE-specific files (VS Code)
+.vscode/
+.DS_Store # macOS specific
+
+# Jupyter Notebook files
+.ipynb_checkpoints
+
+# Logs
+*.log
+log/
+
+# Data (if you don't want to commit large data files)
+# You might want to remove these lines if you decide to track small sample data files
+data/raw/
+data/processed/
