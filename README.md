@@ -65,15 +65,14 @@ To get IntelliTrade up and running on your local machine, follow these steps:
     ```
 
 3.  **Install the required libraries:**
-    Ensure you have a `requirements.txt` file in your project's root directory with `yfinance` and `matplotlib` listed (as you've done).
+    Ensure you have a `requirements.txt` file in your project's root directory.
     Then, install them using pip:
     ```bash
     pip install -r requirements.txt
     ```
 
 4.  **Run the application:**
-    *(Currently, your core scripts are `graph_fetcher.py` and `stock_price_fetcher.py` within the `src/` directory. As the project evolves, you will likely use `main.py` as your primary entry point after refactoring.)*
-
+    
     To run the stock chart plotter:
     ```bash
     python src/graph_fetcher.py
