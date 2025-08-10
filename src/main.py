@@ -4,11 +4,17 @@ from analysis import calculate_simple_moving_average
 
 def main():
     stock_symbol = input("Enter Name of stock you want the chart for: ")
+
+    # We fetch 3 months of data to ensure there's enough for a 20-day SMA
     stock_data = get_stock_history(stock_symbol, period='3mo')
 
     if not stock_data.empty:
         print(f"Fetching data for {stock_symbol}...")
+
+        # Calculate the SMA and add it as a new column to the data
         stock_data_with_sma = calculate_simple_moving_average(stock_data)
+
+        # Pass the data (which now includes the SMA) to the plotting function
         plot_closing_price(stock_data_with_sma, stock_symbol)
     else:
         print(f"Could not fetch data for {stock_symbol}. Please check the symbol.")
