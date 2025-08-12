@@ -1,21 +1,54 @@
 from data_fetcher import get_stock_history
-from plotting import plot_closing_price
+from plotting import plot_closing_price, live_plot_data # IMPORT NEW FUNCTION
 from analysis import calculate_simple_moving_average
 
 def main():
     stock_symbol = input("Enter Name of stock you want the chart for: ")
 
-    # We fetch 3 months of data to ensure there's enough for a 20-day SMA
-    stock_data = get_stock_history(stock_symbol, period='3mo')
+    print("\nSelect time period:")
+    print("1. Today (1-minute intervals) - Live-ish") # UPDATED TEXT
+    print("2. Last 7 Days (30-minute intervals)")
+    print("3. Last 1 Month (Daily)")
+    print("4. Last 1 Year (Weekly)")
+    print("5. Last 5 Years (Weekly)")
+    print("6. All Time (Monthly)")
+
+    choice = input("Enter your choice (1-6): ")
+
+    if choice == '1':
+        # SPECIAL CASE: Call the new live plotting function
+        live_plot_data(stock_symbol)
+        return # EXIT MAIN FUNCTION AFTER LIVE PLOT IS DONE
+
+    # REST OF THE CODE REMAINS THE SAME
+    period = '1mo'
+    interval = '1d'
+
+    if choice == '2':
+        period = '7d'
+        interval = '30m'
+    elif choice == '3':
+        period = '1mo'
+        interval = '1d'
+    elif choice == '4':
+        period = '1y'
+        interval = '1wk'
+    elif choice == '5':
+        period = '5y'
+        interval = '1wk'
+    elif choice == '6':
+        period = 'max'
+        interval = '1mo'
+    else:
+        print("Invalid choice. Defaulting to 1 month (Daily).")
+
+    stock_data = get_stock_history(stock_symbol, period=period, interval=interval)
 
     if not stock_data.empty:
         print(f"Fetching data for {stock_symbol}...")
-
-        # Calculate the SMA and add it as a new column to the data
         stock_data_with_sma = calculate_simple_moving_average(stock_data)
-
-        # Pass the data (which now includes the SMA) to the plotting function
-        plot_closing_price(stock_data_with_sma, stock_symbol)
+        latest_price = stock_data_with_sma['Close'].iloc[-1]
+        plot_closing_price(stock_data_with_sma, stock_symbol, latest_price)
     else:
         print(f"Could not fetch data for {stock_symbol}. Please check the symbol.")
 
