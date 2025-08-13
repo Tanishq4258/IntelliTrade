@@ -1,12 +1,12 @@
 from data_fetcher import get_stock_history
-from plotting import plot_closing_price, live_plot_data # IMPORT NEW FUNCTION
-from analysis import calculate_simple_moving_average
+from plotting import plot_closing_price, live_plot_data
+from analysis import calculate_simple_moving_average, calculate_exponential_moving_average, calculate_rsi
 
 def main():
     stock_symbol = input("Enter Name of stock you want the chart for: ")
 
     print("\nSelect time period:")
-    print("1. Today (1-minute intervals) - Live-ish") # UPDATED TEXT
+    print("1. Today (1-minute intervals) - Live-ish")
     print("2. Last 7 Days (30-minute intervals)")
     print("3. Last 1 Month (Daily)")
     print("4. Last 1 Year (Weekly)")
@@ -16,11 +16,9 @@ def main():
     choice = input("Enter your choice (1-6): ")
 
     if choice == '1':
-        # SPECIAL CASE: Call the new live plotting function
         live_plot_data(stock_symbol)
-        return # EXIT MAIN FUNCTION AFTER LIVE PLOT IS DONE
+        return
 
-    # REST OF THE CODE REMAINS THE SAME
     period = '1mo'
     interval = '1d'
 
@@ -46,9 +44,11 @@ def main():
 
     if not stock_data.empty:
         print(f"Fetching data for {stock_symbol}...")
-        stock_data_with_sma = calculate_simple_moving_average(stock_data)
-        latest_price = stock_data_with_sma['Close'].iloc[-1]
-        plot_closing_price(stock_data_with_sma, stock_symbol, latest_price)
+        stock_data_with_indicators = calculate_simple_moving_average(stock_data)
+        stock_data_with_indicators = calculate_exponential_moving_average(stock_data_with_indicators)
+        stock_data_with_indicators = calculate_rsi(stock_data_with_indicators)
+        latest_price = stock_data_with_indicators['Close'].iloc[-1]
+        plot_closing_price(stock_data_with_indicators, stock_symbol, latest_price)
     else:
         print(f"Could not fetch data for {stock_symbol}. Please check the symbol.")
 
