@@ -59,7 +59,8 @@ def live_plot_data(symbol: str):
         if not data.empty:
             ax.clear()
             ax.plot(data.index, data['Close'], marker='o', linestyle='-', label='Closing Price')
-            ax.set_title(f'{symbol} Live Intraday Price')
+            current_price = data['Close'].iloc[-1]
+            ax.set_title(f'{symbol} Live Intraday Price - Current Price: ${current_price:.2f}')
             ax.set_xlabel('Time')
             ax.set_ylabel('Price')
             ax.grid(True)
