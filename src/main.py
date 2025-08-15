@@ -2,6 +2,7 @@ from data_fetcher import get_stock_history, get_stock_currency, get_stock_news
 from plotting import plot_closing_price, live_plot_data
 from analysis import calculate_simple_moving_average, calculate_exponential_moving_average, calculate_rsi
 import threading
+import matplotlib.pyplot as plt
 
 def fetch_and_print_news(symbol):
     """Fetches and prints news articles."""
@@ -62,6 +63,7 @@ def main():
         print("Invalid choice. Defaulting to 1 month (Daily).")
 
     stock_data = get_stock_history(stock_symbol, period=period, interval=interval)
+    currency = get_stock_currency(stock_symbol)
 
     if not stock_data.empty:
         print(f"Fetching data for {stock_symbol}...")
@@ -77,7 +79,8 @@ def main():
         # Plot the graph, which will now be non-blocking
         plot_closing_price(stock_data_with_indicators, stock_symbol, latest_price, currency)
         
-        news_thread.join() # Wait for the news thread to finish before the program ends
+        # Wait for the news thread to finish before the program ends
+        news_thread.join()
 
     else:
         print(f"Could not fetch data for {stock_symbol}. Please check the symbol.")

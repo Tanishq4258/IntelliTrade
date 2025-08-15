@@ -45,6 +45,7 @@ def live_plot_data(symbol: str, currency: str):
     Simulates a live-updating graph for the current day's stock price.
     This function will continuously fetch new data and redraw the plot.
     """
+    import matplotlib.animation as animation
     from matplotlib import style
     style.use('fivethirtyeight')
     
@@ -52,7 +53,7 @@ def live_plot_data(symbol: str, currency: str):
 
     def animate(i):
         data = get_stock_history(symbol, period='1d', interval='1m')
-
+        
         if not data.empty:
             current_price = data['Close'].iloc[-1]
             ax.clear()
