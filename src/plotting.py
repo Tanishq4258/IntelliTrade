@@ -1,15 +1,14 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.animation as animation
-from data_fetcher import get_stock_history
+from data_fetcher import get_stock_history, get_stock_currency
 
-def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float):
+def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float, currency: str):
     """
     Plots the closing price, available indicators, and the latest price.
     """
     fig, (ax1, ax2) = plt.subplots(2, 1, gridspec_kw={'height_ratios': [3, 1]}, figsize=(10, 8))
     
-    # Plotting on the first subplot (Price Chart)
     ax1.plot(data.index, data['Close'], marker='o', linestyle='-', label='Closing Price')
     if 'SMA_20' in data.columns:
         ax1.plot(data.index, data['SMA_20'], linestyle='-', label='20-Day SMA')
@@ -17,7 +16,7 @@ def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float):
         ax1.plot(data.index, data['EMA_20'], linestyle='-', label='20-Day EMA')
 
     ax1.annotate(
-        f'Latest Price: ${latest_price:.2f}',
+        f'Latest Price: {currency} {latest_price:.2f}',
         xy=(data.index[-1], latest_price),
         xytext=(5, 20),
         textcoords='offset points',
@@ -28,7 +27,6 @@ def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float):
     ax1.grid(True)
     ax1.legend()
     
-    # Plotting on the second subplot (RSI Chart)
     if 'RSI_14' in data.columns:
         ax2.plot(data.index, data['RSI_14'], linestyle='-', label='RSI (14)')
         ax2.axhline(70, linestyle='--', alpha=0.5, color='red')
@@ -40,10 +38,9 @@ def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float):
         ax2.legend()
         
     plt.tight_layout()
-    plt.show()
+    plt.show(block=False)
 
-# (The live_plot_data function remains unchanged)
-def live_plot_data(symbol: str):
+def live_plot_data(symbol: str, currency: str):
     """
     Simulates a live-updating graph for the current day's stock price.
     This function will continuously fetch new data and redraw the plot.
@@ -57,10 +54,10 @@ def live_plot_data(symbol: str):
         data = get_stock_history(symbol, period='1d', interval='1m')
 
         if not data.empty:
+            current_price = data['Close'].iloc[-1]
             ax.clear()
             ax.plot(data.index, data['Close'], marker='o', linestyle='-', label='Closing Price')
-            current_price = data['Close'].iloc[-1]
-            ax.set_title(f'{symbol} Live Intraday Price - Current Price: ${current_price:.2f}')
+            ax.set_title(f'{symbol} Live Intraday Price - Current Price: {currency} {current_price:.2f}')
             ax.set_xlabel('Time')
             ax.set_ylabel('Price')
             ax.grid(True)
@@ -70,5 +67,5 @@ def live_plot_data(symbol: str):
             ax.text(0.5, 0.5, "No data available.", ha='center', va='center', transform=ax.transAxes)
             ax.set_title(f'{symbol} Live Intraday Price')
 
-    ani = animation.FuncAnimation(fig, animate, interval=1000)
+    ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
     plt.show()
