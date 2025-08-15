@@ -1,4 +1,4 @@
-from data_fetcher import get_stock_history
+from data_fetcher import get_stock_history, get_stock_currency # ADD NEW IMPORT
 from plotting import plot_closing_price, live_plot_data
 from analysis import calculate_simple_moving_average, calculate_exponential_moving_average, calculate_rsi
 
@@ -41,6 +41,7 @@ def main():
         print("Invalid choice. Defaulting to 1 month (Daily).")
 
     stock_data = get_stock_history(stock_symbol, period=period, interval=interval)
+    currency = get_stock_currency(stock_symbol) # CALL NEW FUNCTION
 
     if not stock_data.empty:
         print(f"Fetching data for {stock_symbol}...")
@@ -48,7 +49,7 @@ def main():
         stock_data_with_indicators = calculate_exponential_moving_average(stock_data_with_indicators)
         stock_data_with_indicators = calculate_rsi(stock_data_with_indicators)
         latest_price = stock_data_with_indicators['Close'].iloc[-1]
-        plot_closing_price(stock_data_with_indicators, stock_symbol, latest_price)
+        plot_closing_price(stock_data_with_indicators, stock_symbol, latest_price, currency) # PASS CURRENCY
     else:
         print(f"Could not fetch data for {stock_symbol}. Please check the symbol.")
 

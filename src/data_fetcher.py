@@ -16,3 +16,17 @@ def get_stock_history(symbol: str, period: str = '1mo', interval: str = '1d') ->
     stock = yf.Ticker(symbol)
     stock_data = stock.history(period=period, interval=interval)
     return stock_data
+
+def get_stock_currency(symbol: str) -> str:
+    """
+    Fetches the currency of a stock.
+    
+    Args:
+        symbol (str): The stock symbol (e.g., 'AAPL', 'SUZLON.NS').
+    
+    Returns:
+        str: The currency of the stock (e.g., 'USD', 'INR').
+    """
+    stock = yf.Ticker(symbol)
+    currency = stock.info.get('currency')
+    return currency
