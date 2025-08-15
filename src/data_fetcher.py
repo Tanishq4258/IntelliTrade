@@ -1,5 +1,9 @@
 import yfinance as yf
 import pandas as pd
+import requests
+
+# NOTE: Replace with your actual Alpha Vantage API key
+API_KEY = "PLL9MS92UTGD2AE2"
 
 def get_stock_history(symbol: str, period: str = '1mo', interval: str = '1d') -> pd.DataFrame:
     """
@@ -30,3 +34,31 @@ def get_stock_currency(symbol: str) -> str:
     stock = yf.Ticker(symbol)
     currency = stock.info.get('currency')
     return currency
+
+def get_stock_news(symbol: str) -> list:
+    """
+    Fetches news headlines and summaries for a given stock symbol.
+    
+    Args:
+        symbol (str): The stock symbol (e.g., 'AAPL', 'SUZLON.NS').
+    
+    Returns:
+        list: A list of news articles with headline and summary.
+    """
+    url = f'https://www.alphavantage.co/query?function=NEWS_SENTIMENT&tickers={symbol}&apikey={API_KEY}'
+    try:
+        response = requests.get(url)
+        data = response.json()
+        
+        articles = data.get('feed', [])
+        news_list = []
+        for article in articles:
+            news_list.append({
+                "title": article.get('title', 'No Title'),
+                "summary": article.get('summary', 'No Summary'),
+                "url": article.get('url', '#')
+            })
+        return news_list
+    except Exception as e:
+        print(f"Error fetching news: {e}")
+        return []

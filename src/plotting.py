@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.animation as animation
-from data_fetcher import get_stock_history
+from data_fetcher import get_stock_history, get_stock_currency
 
-def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float, currency: str): # ADD CURRENCY
+def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float, currency: str):
     """
     Plots the closing price, available indicators, and the latest price.
     """
@@ -16,7 +16,7 @@ def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float, cur
         ax1.plot(data.index, data['EMA_20'], linestyle='-', label='20-Day EMA')
 
     ax1.annotate(
-        f'Latest Price: {currency} {latest_price:.2f}', # UPDATE THIS LINE
+        f'Latest Price: {currency} {latest_price:.2f}',
         xy=(data.index[-1], latest_price),
         xytext=(5, 20),
         textcoords='offset points',
@@ -38,30 +38,22 @@ def plot_closing_price(data: pd.DataFrame, symbol: str, latest_price: float, cur
         ax2.legend()
         
     plt.tight_layout()
-    plt.show()
+    plt.show(block=False)
 
-
-# live_plot_data function
-# live_plot_data function
-def live_plot_data(symbol: str):
+def live_plot_data(symbol: str, currency: str):
     """
     Simulates a live-updating graph for the current day's stock price.
     This function will continuously fetch new data and redraw the plot.
     """
     import matplotlib.animation as animation
-    from data_fetcher import get_stock_history, get_stock_currency
     from matplotlib import style
-
     style.use('fivethirtyeight')
     
     fig, ax = plt.subplots(figsize=(10, 5))
-    
-    # Fetch the currency once, outside the animation loop
-    currency = get_stock_currency(symbol)
 
     def animate(i):
         data = get_stock_history(symbol, period='1d', interval='1m')
-
+        
         if not data.empty:
             current_price = data['Close'].iloc[-1]
             ax.clear()
@@ -76,5 +68,5 @@ def live_plot_data(symbol: str):
             ax.text(0.5, 0.5, "No data available.", ha='center', va='center', transform=ax.transAxes)
             ax.set_title(f'{symbol} Live Intraday Price')
 
-    ani = animation.FuncAnimation(fig, animate, interval=60000)
+    ani = animation.FuncAnimation(fig, animate, interval=60000, cache_frame_data=False)
     plt.show()
