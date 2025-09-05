@@ -40,17 +40,17 @@ This project is in active development, with a focus on building a robust backend
 
 ## 🛣️ Roadmap
 
-[ ] Add support for candlestick charts.
+        [ ] Add support for candlestick charts.
 
-[ ] Implement custom date range selection for data fetching and plotting.
+        [ ] Implement custom date range selection for data fetching and plotting.
 
-[ ] Implement machine learning for price prediction.
+        [ ] Implement machine learning for price prediction.
 
-[ ] Implement portfolio and budgeting logic to track mock investments.
+        [ ] Implement portfolio and budgeting logic to track mock investments.
 
-[ ] Connect to a real broker API for live or paper trading (simulated trading).
+        [ ] Connect to a real broker API for live or paper trading (simulated trading).
 
-{ ] Build a full web dashboard (possibly with Flask or React).
+        [ ] Build a full web dashboard (possibly with Flask or React).
 
 ---
 
