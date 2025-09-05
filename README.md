@@ -1,26 +1,30 @@
-# 🤖 IntelliTrade – AI-Powered Trading Assistant (Phase 1)
+# 🤖 IntelliTrade – AI-Powered Trading Assistant
 
-Driven by a passion for automated finance, **IntelliTrade** is a personal long-term project aimed at leveraging AI to make intelligent, hands-free trading decisions, learning autonomously from stock data and financial news.
+Driven by a passion for automated finance, IntelliTrade is a personal long-term project aimed at leveraging AI to provide intelligent, data-driven suggestions to a human trader. It is a companion to help analyze and interpret stock market data, not an automated system for guaranteed profit.
 
-This is **Phase 1**, where the initial focus is on:
-- Fetching live stock market data (Indian & Global).
-- Visualizing it in clean, user-friendly graphs.
-- Allowing interactive input from the user.
+This project is in active development, with a focus on building a robust backend for data fetching, analysis, and visualization.
 
 ---
 
-## 🚀 Features So Far
+## 🚀 Features Implemented So Far
 
-- ✅ Fetches **live stock data** using `yfinance`.
-- ✅ Accepts **user input** for stock symbols (e.g., `AAPL`, `SUZLON.NS`).
-- ✅ Plots last 30 days of **daily closing prices** as a line graph using `matplotlib`.
-- ✅ Clear, beginner-friendly Python code with full documentation.
+    ✅ Modular & Scalable Architecture: The project has been refactored into a clean src/ directory with dedicated modules for data fetching, analysis, and plotting.
+
+    ✅ Advanced Technical Indicators: Can calculate and plot a Simple Moving Average (SMA), Exponential Moving Average (EMA), and the Relative Strength Index (RSI).
+
+    ✅ Dynamic Data Visualization: Plots a live-updating intraday graph and static charts for user-selected time periods (day, week, month, year).
+
+    ✅ Live Data & News Integration: Fetches live-ish intraday price data and displays the latest financial news and sentiment from a news API.
+
+    ✅ Currency Handling: Automatically detects and displays the correct currency (e.g., USD, INR) for the selected stock.
+
+    ✅ Multi-threading for Performance: Uses multi-threading to fetch news articles simultaneously while the graphs are being plotted, providing a smoother user experience.
 
 ---
 
 ## 📊 Sample Output
 
-![Sample Stock Chart](images/sample_chart.png)
+![Sample Stock Chart](images/progress_05-09-2025.jpg)
 
 ---
 
@@ -34,13 +38,17 @@ This is **Phase 1**, where the initial focus is on:
 
 ## 🛣️ Roadmap
 
-- [ ] Add support for **candlestick charts**.
-- [ ] Implement **custom date range** selection for data fetching and plotting.
-- [ ] Integrate various **technical indicators** (e.g., RSI, MACD, Moving Averages) into charts and data.
-- [ ] Develop **news sentiment analysis** using Natural Language Processing (NLP) to gauge market sentiment.
-- [ ] Begin implementing **machine learning models** for stock price prediction.
-- [ ] Explore connecting to a **real broker API** for live or paper trading (simulated trading).
-- [ ] Build a full **web dashboard** for user interaction and visualization (possibly using Flask, React, or similar web frameworks).
+    [ ] Add support for candlestick charts.
+
+    [ ] Implement custom date range selection for data fetching and plotting.
+
+    [ ] Implement machine learning for price prediction.
+
+    [ ] Implement portfolio and budgeting logic to track mock investments.
+
+    [ ] Connect to a real broker API for live or paper trading (simulated trading).
+
+    [ ] Build a full web dashboard (possibly with Flask or React).
 
 ---
 
