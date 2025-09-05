@@ -7,11 +7,17 @@ This project is in active development, with a focus on building a robust backend
 ---
 
 🚀 Features Implemented So Far
+        
         ✅ Modular & Scalable Architecture: The project has been refactored into a clean src/ directory with dedicated modules for data fetching, analysis, and plotting.
+        
         ✅ Advanced Technical Indicators: Can calculate and plot a Simple Moving Average (SMA), Exponential Moving Average (EMA), and the Relative Strength Index (RSI).
+        
         ✅ Dynamic Data Visualization: Plots a live-updating intraday graph and static charts for user-selected time periods (day, week, month, year).
+        
         ✅ Live Data & News Integration: Fetches live-ish intraday price data and displays the latest financial news and sentiment from a news API.
+        
         ✅ Currency Handling: Automatically detects and displays the correct currency (e.g., USD, INR) for the selected stock.
+        
         ✅ Multi-threading for Performance: Uses multi-threading to fetch news articles simultaneously while the graphs are being plotted, providing a smoother user experience.
   
 
