@@ -6,20 +6,16 @@ This project is in active development, with a focus on building a robust backend
 
 ---
 
-## 🚀 Features Implemented So Far
-
+🚀 Features Implemented So Far
     ✅ Modular & Scalable Architecture: The project has been refactored into a clean src/ directory with dedicated modules for data fetching, analysis, and plotting.
-
     ✅ Advanced Technical Indicators: Can calculate and plot a Simple Moving Average (SMA), Exponential Moving Average (EMA), and the Relative Strength Index (RSI).
-
     ✅ Dynamic Data Visualization: Plots a live-updating intraday graph and static charts for user-selected time periods (day, week, month, year).
-
     ✅ Live Data & News Integration: Fetches live-ish intraday price data and displays the latest financial news and sentiment from a news API.
-
     ✅ Currency Handling: Automatically detects and displays the correct currency (e.g., USD, INR) for the selected stock.
-
     ✅ Multi-threading for Performance: Uses multi-threading to fetch news articles simultaneously while the graphs are being plotted, providing a smoother user experience.
+  
 
+    
 ---
 
 ## 📊 Sample Output
@@ -38,17 +34,17 @@ This project is in active development, with a focus on building a robust backend
 
 ## 🛣️ Roadmap
 
-    [ ] Add support for candlestick charts.
+[ ] Add support for candlestick charts.
 
-    [ ] Implement custom date range selection for data fetching and plotting.
+[ ] Implement custom date range selection for data fetching and plotting.
 
-    [ ] Implement machine learning for price prediction.
+[ ] Implement machine learning for price prediction.
 
-    [ ] Implement portfolio and budgeting logic to track mock investments.
+[ ] Implement portfolio and budgeting logic to track mock investments.
 
-    [ ] Connect to a real broker API for live or paper trading (simulated trading).
+[ ] Connect to a real broker API for live or paper trading (simulated trading).
 
-    [ ] Build a full web dashboard (possibly with Flask or React).
+{ ] Build a full web dashboard (possibly with Flask or React).
 
 ---
 
