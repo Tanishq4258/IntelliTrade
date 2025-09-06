@@ -4,7 +4,7 @@ class Portfolio:
         self.holdings = {}
         print(f"Portfolio initialized with {self.cash:.2f} cash.")
     
-    def buy(self, symbol, quatity, price):
+    def buy(self, symbol, quantity, price):
         cost = quantity * price
         if cost > self.cash:
             print("Not enough cash to make this purchase.")
