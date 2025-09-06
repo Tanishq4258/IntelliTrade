@@ -62,3 +62,17 @@ def get_stock_news(symbol: str) -> list:
     except Exception as e:
         print(f"Error fetching news: {e}")
         return []
+    
+def get_exchange_rate(from_currency: str, to_currency: str) -> float:
+    """
+    Fetches the exchange rate between two currencies using a virtual pair.
+    """
+    pair = f"{from_currency}{to_currency}=X"
+    try:
+        data = yf.Ticker(pair).history(period='1d')
+        if not data.empty:
+            return data['Close'].iloc[-1]
+    except Exception:
+        pass
+    return 1.0 # Return 1.0 if currencies are the same or rate is not found
+    
