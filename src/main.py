@@ -1,4 +1,4 @@
-from data_fetcher import get_stock_history, get_stock_currency, get_stock_news, get_exchange_rate
+from data_fetcher import get_stock_history, get_stock_currency, get_stock_news
 from plotting import plot_closing_price, live_plot_data
 from analysis import calculate_simple_moving_average, calculate_exponential_moving_average, calculate_rsi
 from portfolio import Portfolio
@@ -6,8 +6,20 @@ import threading
 import matplotlib.pyplot as plt
 
 def fetch_and_print_news(symbol):
-    # ... (function remains unchanged)
-    pass
+    """Fetches and prints news articles."""
+    print("\n------------------------------")
+    print("Fetching Latest News for", symbol)
+    print("------------------------------")
+    news_articles = get_stock_news(symbol)
+    
+    if news_articles:
+        for i, article in enumerate(news_articles[:5]):
+            print(f"{i+1}. {article['title']}")
+            print(f"   - {article['summary']}")
+            print(f"   - Link: {article['url']}")
+            print("-" * 20)
+    else:
+        print("No news articles found or an error occurred.")
 
 def main():
     initial_budget = float(input("Enter your initial investment budget: "))
