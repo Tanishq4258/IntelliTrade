@@ -26,7 +26,8 @@ This project is in active development, with a focus on building a robust backend
 
 ## 📊 Sample Output
 
-![Sample Stock Chart](images/progress_05-09-2025.jpg)
+![Sample Stock Chart](images/progress_18-03-2026.png)
+![Sample Stock Chart](images/progress2_18-03-2026.png)
 
 ---
 
