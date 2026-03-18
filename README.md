@@ -93,6 +93,16 @@ To get IntelliTrade up and running on your local machine, follow these steps:
     ```
     Follow the on-screen prompts to enter stock symbols.
 
+5.  **Run the Frontend Dashboard (Node.js/Express):**
+
+    Navigate to the `frontend` directory, install dependencies, and start the server:
+    ```bash
+    cd frontend
+    npm install
+    npm start
+    ```
+    Then, open [http://localhost:3000](http://localhost:3000) in your web browser. The dashboard will automatically fetch data from `http://localhost:5000/api` based on the backend API contract.
+
 ---
 
 ## 👨‍💻 Author

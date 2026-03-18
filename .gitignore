@@ -21,3 +21,6 @@ log/
 # You might want to remove these lines if you decide to track small sample data files
 data/raw/
 data/processed/
+
+# Node.js
+frontend/node_modules/
