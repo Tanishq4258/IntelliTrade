@@ -81,17 +81,13 @@ To get IntelliTrade up and running on your local machine, follow these steps:
     pip install -r requirements.txt
     ```
 
-4.  **Run the application:**
+4.  **Run the Backend API Server:**
     
-    To run the stock chart plotter:
+    Our newly integrated Flask Server wraps the fetchers into REST endpoints over port 5000:
     ```bash
-    python src/graph_fetcher.py
+    python src/app.py
     ```
-    To run the live price fetcher:
-    ```bash
-    python src/stock_price_fetcher.py
-    ```
-    Follow the on-screen prompts to enter stock symbols.
+    *(If you prefer the old terminal input method, you can still run `python src/graph_fetcher.py` directly).*
 
 5.  **Run the Frontend Dashboard (Node.js/Express):**
 
