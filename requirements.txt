@@ -1,2 +1,5 @@
 yfinance
 matplotlib
+flask
+flask-cors
+pandas

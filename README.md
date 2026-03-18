@@ -26,7 +26,8 @@ This project is in active development, with a focus on building a robust backend
 
 ## 📊 Sample Output
 
-![Sample Stock Chart](images/progress_05-09-2025.jpg)
+![Sample Stock Chart](images/progress_18-03-2026.png)
+![Sample Stock Chart](images/progress2_18-03-2026.png)
 
 ---
 
@@ -81,17 +82,23 @@ To get IntelliTrade up and running on your local machine, follow these steps:
     pip install -r requirements.txt
     ```
 
-4.  **Run the application:**
+4.  **Run the Backend API Server:**
     
-    To run the stock chart plotter:
+    Our newly integrated Flask Server wraps the fetchers into REST endpoints over port 5000:
     ```bash
-    python src/graph_fetcher.py
+    python src/app.py
     ```
-    To run the live price fetcher:
+    *(If you prefer the old terminal input method, you can still run `python src/graph_fetcher.py` directly).*
+
+5.  **Run the Frontend Dashboard (Node.js/Express):**
+
+    Navigate to the `frontend` directory, install dependencies, and start the server:
     ```bash
-    python src/stock_price_fetcher.py
+    cd frontend
+    npm install
+    npm start
     ```
-    Follow the on-screen prompts to enter stock symbols.
+    Then, open [http://localhost:3000](http://localhost:3000) in your web browser. The dashboard will automatically fetch data from `http://localhost:5000/api` based on the backend API contract.
 
 ---
 
