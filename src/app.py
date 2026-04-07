@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from graph_fetcher import get_chart_base64
-from stock_price_fetcher import get_live_price, get_stock_info, get_stock_news
+from services.graph_service import get_chart_base64
+from services.stock_service import get_live_price, get_stock_info, get_stock_news
 
 app = Flask(__name__)
 # Enable CORS for the Node.js frontend to interact seamlessly
