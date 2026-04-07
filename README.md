@@ -88,7 +88,7 @@ To get IntelliTrade up and running on your local machine, follow these steps:
     ```bash
     python src/app.py
     ```
-    *(If you prefer the old terminal input method, you can still run `python src/graph_fetcher.py` directly).*
+    *(If you prefer the old terminal method for testing charts, run `python src/services/graph_service.py` directly).*
 
 5.  **Run the Frontend Dashboard (Node.js/Express):**
 
