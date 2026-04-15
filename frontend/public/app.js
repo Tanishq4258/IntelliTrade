@@ -1,4 +1,6 @@
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5000/api'
+    : '/api';
 
 // DOM Elements
 const clockElement = document.getElementById('market-time');
@@ -14,6 +16,7 @@ const rsiContainer = document.getElementById('rsi-container');
 // State
 let isEST = true;
 let currentSettings = { symbol: 'AAPL', period: '1Y', indicators: ['RSI'] };
+let portfolioState = { cash: 10000, holdings: {}, currency: 'USD' };
 const WATCHLIST = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'RELIANCE.NS', 'TCS.NS', 'TSLA', 'NVDA'];
 
 // Initialize App
@@ -21,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startClock();
     setupDropdowns();
     initTicker();
+    updatePortfolioUI(); // Initial portfolio fetch
     
     // Initial fetch for background operations
     setInterval(updateTicker, 30000);
@@ -237,7 +241,7 @@ function showChartError() {
         <div class="text-accent-red flex flex-col items-center gap-2 fade-in">
             <svg class="w-10 h-10 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             <span class="text-sm font-heading font-bold">Failed to load chart from backend.</span>
-            <span class="text-xs text-gray-500">Ensure Flask server is running on localhost:5000</span>
+            <span class="text-xs text-gray-500">Ensure backend server is running and accessible.</span>
         </div>`;
 }
 
@@ -283,6 +287,86 @@ function renderStockInfo(data) {
     document.getElementById('info-market-cap').innerText = data.market_cap || 'N/A';
     document.getElementById('info-volume').innerText = Math.floor(Math.random() * 50) + 10 + 'M'; // Mock volume
     document.getElementById('info-day-range').innerText = `${(price * 0.98).toFixed(2)} - ${(price * 1.02).toFixed(2)}`; // Mock range
+
+    // Show trading controls for the analyzed stock
+    showTradeControls(data);
+}
+
+// 7. Portfolio Simulation Logic
+async function updatePortfolioUI() {
+    try {
+        const res = await fetch(`${API_BASE}/portfolio/status`);
+        if (res.ok) {
+            const data = await res.json();
+            portfolioState = data;
+            
+            document.getElementById('portfolio-cash-balance').innerText = data.cash.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            document.getElementById('portfolio-cash-currency').innerText = data.currency === 'INR' ? '₹' : '$';
+            
+            const holdingsCountEl = document.getElementById('holdings-count');
+            const previewEl = document.getElementById('holdings-preview');
+            const count = Object.keys(data.holdings).length;
+            
+            holdingsCountEl.innerText = `${count} Position${count !== 1 ? 's' : ''}`;
+            
+            if (count === 0) {
+                previewEl.innerHTML = '<span class="text-xs text-gray-600 italic">No open positions</span>';
+            } else {
+                previewEl.innerHTML = Object.entries(data.holdings).map(([sym, hold]) => `
+                    <div class="flex flex-col bg-charcoal-700 border border-charcoal-border px-2 py-1 rounded min-w-[60px]">
+                        <span class="text-[10px] font-bold text-white">${sym}</span>
+                        <span class="text-[10px] text-accent-green">${hold.quantity} @ ${hold.buy_price.toFixed(1)}</span>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch (e) {
+        console.error("Failed to fetch portfolio:", e);
+    }
+}
+
+function showTradeControls(stockData) {
+    const controls = document.getElementById('buy-sell-controls');
+    const tip = document.getElementById('trade-tip');
+    controls.classList.remove('hidden');
+    tip.classList.add('hidden');
+    
+    // Clone to remove old listeners
+    const buyBtn = document.getElementById('buy-btn');
+    const sellBtn = document.getElementById('sell-btn');
+    const newBuy = buyBtn.cloneNode(true);
+    const newSell = sellBtn.cloneNode(true);
+    buyBtn.parentNode.replaceChild(newBuy, buyBtn);
+    sellBtn.parentNode.replaceChild(newSell, sellBtn);
+
+    newBuy.innerText = `Buy 1 ${stockData.symbol || tickerInput.value.toUpperCase()}`;
+    newSell.innerText = `Sell 1 ${stockData.symbol || tickerInput.value.toUpperCase()}`;
+
+    newBuy.onclick = () => executeTrade('buy', stockData);
+    newSell.onclick = () => executeTrade('sell', stockData);
+}
+
+async function executeTrade(type, stockData) {
+    const symbol = stockData.symbol || tickerInput.value.toUpperCase();
+    const price = stockData.price;
+    const currency = stockData.currency === '₹' ? 'INR' : 'USD';
+
+    try {
+        const res = await fetch(`${API_BASE}/portfolio/${type}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symbol, quantity: 1, price, currency })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            alert(result.message);
+            updatePortfolioUI();
+        } else {
+            alert(result.error || "Transaction failed");
+        }
+    } catch (e) {
+        alert("Execution error: " + e.message);
+    }
 }
 
 // 5. News Rendering
@@ -292,12 +376,28 @@ async function fetchNews(symbol) {
     return await res.json();
 }
 
-function renderNews(articles) {
+function renderNews(data) {
     const newsFeed = document.getElementById('news-feed');
     newsFeed.innerHTML = ''; // Clear skeleton
     
+    // Support both the new object format {summary, articles} and the legacy array fallback
+    const articles = Array.isArray(data) ? data : (data.articles || []);
+    const summary = Array.isArray(data) ? null : data.summary;
+    
+    if (summary) {
+        const summaryHtml = `
+            <div class="p-3 mb-2 rounded-md bg-accent-gold/5 border border-accent-gold/20 fade-in">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-bold text-accent-gold uppercase tracking-[0.2em]">⚡ Gemini AI Summary</span>
+                </div>
+                <p class="text-xs text-gray-300 leading-relaxed italic">"${summary}"</p>
+            </div>
+        `;
+        newsFeed.insertAdjacentHTML('beforeend', summaryHtml);
+    }
+    
     if (articles.length === 0) {
-        newsFeed.innerHTML = '<div class="text-gray-500 text-sm p-4 text-center">No news articles found.</div>';
+        newsFeed.insertAdjacentHTML('beforeend', '<div class="text-gray-500 text-sm p-4 text-center">No news articles found.</div>');
         return;
     }
     

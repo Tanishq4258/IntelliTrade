@@ -5,6 +5,7 @@ import yfinance as yf
 import matplotlib
 matplotlib.use('Agg') # Needed to prevent GUI popups in web servers
 import matplotlib.pyplot as plt
+import mplfinance as mpf
 import io
 import base64
 import pandas as pd
@@ -27,33 +28,46 @@ def get_chart_base64(symbol, period='1Y', indicators=None):
     if stock_data.empty:
         return None, None
         
-    # Main Plot
-    plt.figure(figsize=(10, 5))
-    
-    # Dark Mode Aesthetic Match
-    plt.style.use('dark_background')
-    plt.gca().set_facecolor('#0d1117')
-    plt.gcf().set_facecolor('#0d1117')
-    
-    plt.plot(stock_data.index, stock_data['Close'], marker='', linestyle='-', color='#00ff88', linewidth=2)
-    
-    # Add SMA/EMA if requested
+    # Prepare plot appearance
+    # IntelliTrade custom style
+    it_colors = mpf.make_marketcolors(up='#00ff88', down='#ff4d4d', inherit=True)
+    it_style = mpf.make_mpf_style(base_mpf_style='charles', marketcolors=it_colors, 
+                                 facecolor='#0d1117', edgecolor='#30363d', 
+                                 gridcolor='#30363d', gridstyle='-')
+
+    # Prepare MAV (Moving Average) list
+    mav_list = []
+    mav_colors = []
     if 'SMA' in indicators:
-        sma = stock_data['Close'].rolling(window=20).mean()
-        plt.plot(stock_data.index, sma, color='#f0c040', label='SMA 20', linestyle='--')
+        mav_list.append(20)
+        mav_colors.append('#f0c040')
     if 'EMA' in indicators:
-        ema = stock_data['Close'].ewm(span=20, adjust=False).mean()
-        plt.plot(stock_data.index, ema, color='#ff4d4d', label='EMA 20', linestyle=':')
-        
-    plt.title(f'{symbol} Price ({period})', color='white')
-    plt.xlabel('Date', color='gray')
-    plt.ylabel('Price', color='gray')
-    plt.grid(True, color='#30363d')
-    plt.legend()
-    
+        # Note: mplfinance mav is simple moving average. 
+        # For EMA, we'd need to add it as an extra plot (addplot).
+        # To keep it perfect and efficient, I'll use simple mav if only SMA requested,
+        # and addplot for more complex indicators.
+        pass
+
     # Save Main Plot to Base64
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight', transparent=True)
+    
+    # Extra plots for indicators
+    add_plots = []
+    if 'EMA' in indicators:
+        ema = stock_data['Close'].ewm(span=20, adjust=False).mean()
+        add_plots.append(mpf.make_addplot(ema, color='#ff4d4d', linestyle=':'))
+    if 'SMA' in indicators:
+        sma = stock_data['Close'].rolling(window=20).mean()
+        add_plots.append(mpf.make_addplot(sma, color='#f0c040', linestyle='--'))
+
+    # Generate Candlestick Chart
+    mpf.plot(stock_data, type='candle', style=it_style, 
+             title=f'\n{symbol} Price ({period})',
+             ylabel='Price',
+             figratio=(10, 5),
+             addplot=add_plots,
+             savefig=dict(fname=buf, format='png', bbox_inches='tight', transparent=True))
+    
     buf.seek(0)
     chart_img = base64.b64encode(buf.getvalue()).decode('utf-8')
     plt.close()

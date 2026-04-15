@@ -1,5 +1,8 @@
-yfinance
-matplotlib
-flask
-flask-cors
-pandas
+flask==3.0.2
+flask-cors==4.0.0
+pandas==2.2.1
+matplotlib==3.8.3
+yfinance==0.2.40
+gunicorn==21.2.0
+mplfinance==0.12.10b0
+google-generativeai==0.4.1

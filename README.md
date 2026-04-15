@@ -19,6 +19,14 @@ This project is in active development, with a focus on building a robust backend
         ✅ Currency Handling: Automatically detects and displays the correct currency (e.g., USD, INR) for the selected stock.
         
         ✅ Multi-threading for Performance: Uses multi-threading to fetch news articles simultaneously while the graphs are being plotted, providing a smoother user experience.
+        
+        ✅ Professional Candlestick Charts: Replaced basic line charts with industry-standard candlestick visualization using `mplfinance`.
+        
+        ✅ Portfolio Simulator: Integrated a mock trading engine with a $10,000 starting balance for paper trading stocks.
+        
+        ✅ AI-Powered News Summaries: Leverages Google Gemini AI to condense market news into concise, 2-sentence insights.
+        
+        ✅ Production-Ready Architecture: Optimized for cloud deployment (Render/Railway) with dynamic API routing and gunicorn support.
   
 
     
@@ -36,22 +44,23 @@ This project is in active development, with a focus on building a robust backend
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![yfinance](https://img.shields.io/badge/yfinance-blue?style=for-the-badge&logo=python&logoColor=white)
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-green?style=for-the-badge&logo=matplotlib&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
 
 ---
 
 ## 🛣️ Roadmap
 
-        [ ] Add support for candlestick charts.
+        [x] Add support for candlestick charts.
 
         [ ] Implement custom date range selection for data fetching and plotting.
 
         [ ] Implement machine learning for price prediction.
 
-        [ ] Implement portfolio and budgeting logic to track mock investments.
+        [x] Implement portfolio and budgeting logic to track mock investments.
 
         [ ] Connect to a real broker API for live or paper trading (simulated trading).
 
-        [ ] Build a full web dashboard (possibly with Flask or React).
+        [x] Build a full web dashboard (v1.0 complete).
 
 ---
 

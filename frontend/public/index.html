@@ -131,6 +131,37 @@
                 </button>
             </form>
         </section>
+        
+        <!-- Portfolio Simulator Widget -->
+        <section class="glass-panel p-5 relative z-10 flex flex-col md:flex-row gap-6 items-center justify-between border-accent-gold/20" id="portfolio-widget">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-accent-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <h2 class="text-xs text-gray-400 uppercase tracking-wider font-bold font-heading">Mock Portfolio Cash</h2>
+                    <div class="text-2xl font-bold text-white"><span class="text-accent-gold" id="portfolio-cash-currency">$</span><span id="portfolio-cash-balance">10,000.00</span></div>
+                </div>
+            </div>
+
+            <div class="flex-grow max-w-md mx-4 hidden md:block">
+                <div class="flex justify-between text-[10px] text-gray-500 uppercase font-bold mb-1">
+                    <span>Active Holdings</span>
+                    <span id="holdings-count">0 Positions</span>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="holdings-preview">
+                    <span class="text-xs text-gray-600 italic">No open positions</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3" id="trade-actions">
+                <div id="buy-sell-controls" class="hidden flex gap-3 fade-in">
+                    <button id="buy-btn" class="bg-accent-green/10 text-accent-green border border-accent-green/50 hover:bg-accent-green hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Buy 1</button>
+                    <button id="sell-btn" class="bg-accent-red/10 text-accent-red border border-accent-red/50 hover:bg-accent-red hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Sell 1</button>
+                </div>
+                <span class="text-xs text-gray-500 italic hidden sm:block" id="trade-tip">Search for a ticker to trade</span>
+            </div>
+        </section>
 
         <!-- Dynamic Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 pt-2">

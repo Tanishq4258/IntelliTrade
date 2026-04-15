@@ -24,3 +24,6 @@ data/processed/
 
 # Node.js
 frontend/node_modules/
+
+# Secrets
+.env
