@@ -10,20 +10,30 @@ import io
 import base64
 import pandas as pd
 
-def get_chart_base64(symbol, period='1Y', indicators=None):
+def get_chart_base64(symbol, period='1Y', indicators=None, chart_type='candle'):
     if indicators is None:
         indicators = []
         
     stock = yf.Ticker(symbol)
     
-    # Translate frontend period (1D, 1W, 1M, 1Y) to yfinance format
+    # Translate period and set interval for granularity
     yf_period = '1y'
-    if period == '1D': yf_period = '1d'
-    elif period == '1W': yf_period = '5d'
-    elif period == '1M': yf_period = '1mo'
-    else: yf_period = '1y'
+    yf_interval = '1d'
+    
+    if period == '1D': 
+        yf_period = '1d'
+        yf_interval = '1m' # Exact minute-by-minute for 1D
+    elif period == '1W': 
+        yf_period = '5d'
+        yf_interval = '15m' # High detail for 1 week
+    elif period == '1M': 
+        yf_period = '1mo'
+        yf_interval = '1h'
+    else: 
+        yf_period = '1y'
+        yf_interval = '1d'
         
-    stock_data = stock.history(period=yf_period)
+    stock_data = stock.history(period=yf_period, interval=yf_interval)
     
     if stock_data.empty:
         return None, None
@@ -60,8 +70,10 @@ def get_chart_base64(symbol, period='1Y', indicators=None):
         sma = stock_data['Close'].rolling(window=20).mean()
         add_plots.append(mpf.make_addplot(sma, color='#f0c040', linestyle='--'))
 
-    # Generate Candlestick Chart
-    mpf.plot(stock_data, type='candle', style=it_style, 
+    # Generate Chart based on type
+    chart_kind = 'candle' if chart_type == 'candle' else 'line'
+    
+    mpf.plot(stock_data, type=chart_kind, style=it_style, 
              title=f'\n{symbol} Price ({period})',
              ylabel='Price',
              figratio=(10, 5),

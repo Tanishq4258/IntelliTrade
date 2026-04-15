@@ -15,8 +15,9 @@ const rsiContainer = document.getElementById('rsi-container');
 
 // State
 let isEST = true;
-let currentSettings = { symbol: 'AAPL', period: '1Y', indicators: ['RSI'] };
-let portfolioState = { cash: 10000, holdings: {}, currency: 'USD' };
+let currentSettings = { symbol: 'AAPL', period: '1D', indicators: ['RSI'], chart_type: 'candle' };
+let portfolioState = { cash: 1000000, holdings: {}, currency: 'INR' };
+let liveInterval = null;
 const WATCHLIST = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'RELIANCE.NS', 'TCS.NS', 'TSLA', 'NVDA'];
 
 // Initialize App
@@ -77,9 +78,9 @@ function setupDropdowns() {
 function updateIndicatorLabel() {
     const checked = Array.from(document.querySelectorAll('.indicator-cb:checked')).map(cb => cb.value);
     const label = document.getElementById('indicator-label');
-    if (checked.length === 0) label.innerText = 'None';
+    if (checked.length === 0) label.innerText = 'No Indicators';
     else if (checked.length <= 2) label.innerText = checked.join(', ');
-    else label.innerText = `${checked.length} selected`;
+    else label.innerText = `${checked.length} Active`;
 }
 
 // 4. Live Ticker Logic
@@ -132,60 +133,62 @@ async function updateTicker() {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const symbol = tickerInput.value.toUpperCase();
+    const symbol = tickerInput.value.trim().toUpperCase();
     const period = document.getElementById('period-select').value;
+    const chart_type = document.getElementById('chart-type-select').value;
     const indicators = Array.from(document.querySelectorAll('.indicator-cb:checked')).map(cb => cb.value);
     
+    currentSettings = { symbol, period, indicators, chart_type };
     document.getElementById('news-symbol-label').innerText = symbol;
     
-    // UI Loading State (Skeletons)
-    showLoadingState();
+    // Clear old interval if exists
+    if (liveInterval) clearInterval(liveInterval);
     
-    // Fetch Data concurrently
+    // If 1D, start live updates
+    if (period === '1D') {
+        liveInterval = setInterval(() => fetchUpdates(true), 60000); // Silent refresh every 60s
+    }
+    
+    // Initial full fetch
+    fetchUpdates(false);
+});
+
+async function fetchUpdates(silent = false) {
+    const { symbol, period, indicators, chart_type } = currentSettings;
+    
+    if (!silent) showLoadingState();
+    
     try {
         const [chartData, infoData, newsData] = await Promise.allSettled([
-            fetchChart(symbol, period, indicators),
+            fetchChart(symbol, period, indicators, chart_type),
             fetchStockInfo(symbol),
             fetchNews(symbol)
         ]);
         
-        // Handle Chart
         if (chartData.status === 'fulfilled' && chartData.value) {
             renderCharts(chartData.value, indicators);
-        } else {
-            showChartError();
         }
         
-        // Handle Info
-        if (infoData.status === 'fulfilled' && infoData.value) {
+        if (infoData.status === 'fulfilled' && infoData.value && !silent) {
             renderStockInfo(infoData.value);
-        } else {
-            // Mock stock info fallback
-            renderStockInfo({
-                name: `${symbol} Inc.`,
-                price: 153.20,
-                change_pct: 1.45,
-                market_cap: '2.5T',
-                currency: '$'
-            });
+        } else if (infoData.status === 'fulfilled' && infoData.value) {
+            // Update prices silently
+            updateLivePricesOnly(infoData.value);
         }
         
-        // Handle News
-        if (newsData.status === 'fulfilled' && newsData.value) {
+        if (newsData.status === 'fulfilled' && newsData.value && !silent) {
             renderNews(newsData.value);
-        } else {
-            // Mock news fallback
-            renderNews([
-                { title: `Analysts see strong growth for ${symbol}`, source: "Bloomberg", sentiment: "Positive", url: "#" },
-                { title: `${symbol} faces regulatory scrutiny`, source: "Reuters", sentiment: "Negative", url: "#" },
-                { title: `Quarterly earnings preview for ${symbol}`, source: "WSJ", sentiment: "Neutral", url: "#" }
-            ]);
         }
-        
     } catch (e) {
-        console.error("Analysis failed:", e);
+        console.error("Updates failed:", e);
     }
-});
+}
+
+function updateLivePricesOnly(data) {
+    const price = typeof data.price === 'number' ? data.price.toFixed(2) : data.price;
+    document.getElementById('info-price').innerText = price;
+    // Potentially update other small bits if needed
+}
 
 function showLoadingState() {
     // Info Bar loading
@@ -207,12 +210,12 @@ function showLoadingState() {
 }
 
 // 3. Chart Rendering
-async function fetchChart(symbol, period, indicators) {
+async function fetchChart(symbol, period, indicators, chart_type) {
     try {
         const res = await fetch(`${API_BASE}/analyze`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ symbol, period, indicators })
+            body: JSON.stringify({ symbol, period, indicators, chart_type })
         });
         if (!res.ok) throw new Error('API Error');
         return await res.json(); // { chart_image: "...", rsi_image: "..." }
@@ -301,7 +304,7 @@ async function updatePortfolioUI() {
             portfolioState = data;
             
             document.getElementById('portfolio-cash-balance').innerText = data.cash.toLocaleString(undefined, { minimumFractionDigits: 2 });
-            document.getElementById('portfolio-cash-currency').innerText = data.currency === 'INR' ? '₹' : '$';
+            document.getElementById('portfolio-cash-currency').innerText = '₹';
             
             const holdingsCountEl = document.getElementById('holdings-count');
             const previewEl = document.getElementById('holdings-preview');
@@ -339,15 +342,16 @@ function showTradeControls(stockData) {
     buyBtn.parentNode.replaceChild(newBuy, buyBtn);
     sellBtn.parentNode.replaceChild(newSell, sellBtn);
 
-    newBuy.innerText = `Buy 1 ${stockData.symbol || tickerInput.value.toUpperCase()}`;
-    newSell.innerText = `Sell 1 ${stockData.symbol || tickerInput.value.toUpperCase()}`;
+    newBuy.innerText = `Buy`;
+    newSell.innerText = `Sell`;
 
     newBuy.onclick = () => executeTrade('buy', stockData);
     newSell.onclick = () => executeTrade('sell', stockData);
 }
 
 async function executeTrade(type, stockData) {
-    const symbol = stockData.symbol || tickerInput.value.toUpperCase();
+    const symbol = stockData.symbol || tickerInput.value.trim().toUpperCase();
+    const quantity = parseInt(document.getElementById('trade-quantity').value) || 1;
     const price = stockData.price;
     const currency = stockData.currency === '₹' ? 'INR' : 'USD';
 
@@ -355,7 +359,7 @@ async function executeTrade(type, stockData) {
         const res = await fetch(`${API_BASE}/portfolio/${type}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ symbol, quantity: 1, price, currency })
+            body: JSON.stringify({ symbol, quantity, price, currency })
         });
         const result = await res.json();
         if (res.ok) {

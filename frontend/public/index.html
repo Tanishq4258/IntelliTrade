@@ -85,19 +85,26 @@
                 <div class="flex-grow w-full md:w-auto">
                     <label class="block text-xs text-gray-400 uppercase tracking-wider mb-2 font-bold font-heading">Ticker Symbol</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
                         <input type="text" id="ticker-input" placeholder="e.g. AAPL, RELIANCE.NS" required
-                            class="w-full bg-charcoal-600 border border-charcoal-border rounded-md py-2 pl-8 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-accent-green focus:border-accent-green transition-all" value="AAPL">
+                            class="w-full bg-charcoal-600 border border-charcoal-border rounded-md py-2 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-accent-green focus:border-accent-green transition-all" value="AAPL">
                     </div>
                 </div>
 
                 <div class="w-full md:w-1/4">
                     <label class="block text-xs text-gray-400 uppercase tracking-wider mb-2 font-bold font-heading">Time Period</label>
                     <select id="period-select" class="w-full bg-charcoal-600 border border-charcoal-border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-accent-green focus:border-accent-green transition-all appearance-none cursor-pointer">
-                        <option value="1D">1 Day</option>
+                        <option value="1D" selected>1 Day (High Res)</option>
                         <option value="1W">1 Week</option>
                         <option value="1M">1 Month</option>
-                        <option value="1Y" selected>1 Year</option>
+                        <option value="1Y">1 Year</option>
+                    </select>
+                </div>
+
+                <div class="w-full md:w-1/4">
+                    <label class="block text-xs text-gray-400 uppercase tracking-wider mb-2 font-bold font-heading">Chart Type</label>
+                    <select id="chart-type-select" class="w-full bg-charcoal-600 border border-charcoal-border rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-accent-green focus:border-accent-green transition-all appearance-none cursor-pointer">
+                        <option value="candle" selected>Candlestick</option>
+                        <option value="line">Line Chart</option>
                     </select>
                 </div>
 
@@ -108,18 +115,15 @@
                             <span id="indicator-label" class="truncate">Select...</span>
                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
-                        <div id="indicator-menu" class="hidden absolute top-full left-0 right-0 mt-1 bg-charcoal-700 border border-charcoal-border rounded-md shadow-xl p-2 z-50">
-                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer">
-                                <input type="checkbox" value="SMA" class="accent-accent-green indicator-cb"> <span>SMA</span>
+                        <div id="indicator-menu" class="hidden absolute top-auto bottom-full md:top-full md:bottom-auto left-0 right-0 mb-1 md:mt-1 bg-charcoal-700 border border-charcoal-border rounded-md shadow-2xl p-2 z-[60] min-w-[200px]">
+                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer transition-colors">
+                                <input type="checkbox" value="SMA" class="accent-accent-green indicator-cb"> <span class="text-sm">SMA (20)</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer">
-                                <input type="checkbox" value="EMA" class="accent-accent-green indicator-cb"> <span>EMA</span>
+                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer transition-colors">
+                                <input type="checkbox" value="EMA" class="accent-accent-green indicator-cb"> <span class="text-sm">EMA (20)</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer">
-                                <input type="checkbox" value="RSI" class="accent-accent-green indicator-cb" checked> <span>RSI (Separate Chart)</span>
-                            </label>
-                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer">
-                                <input type="checkbox" value="MACD" class="accent-accent-green indicator-cb"> <span>MACD</span>
+                            <label class="flex items-center gap-2 p-2 hover:bg-charcoal-600 rounded cursor-pointer transition-colors">
+                                <input type="checkbox" value="RSI" class="accent-accent-green indicator-cb" checked> <span class="text-sm">RSI (Relative Strength)</span>
                             </label>
                         </div>
                     </div>
@@ -140,7 +144,7 @@
                 </div>
                 <div>
                     <h2 class="text-xs text-gray-400 uppercase tracking-wider font-bold font-heading">Mock Portfolio Cash</h2>
-                    <div class="text-2xl font-bold text-white"><span class="text-accent-gold" id="portfolio-cash-currency">$</span><span id="portfolio-cash-balance">10,000.00</span></div>
+                    <div class="text-2xl font-bold text-white"><span class="text-accent-gold" id="portfolio-cash-currency">₹</span><span id="portfolio-cash-balance">1,000,000.00</span></div>
                 </div>
             </div>
 
@@ -154,10 +158,16 @@
                 </div>
             </div>
 
-            <div class="flex gap-3" id="trade-actions">
-                <div id="buy-sell-controls" class="hidden flex gap-3 fade-in">
-                    <button id="buy-btn" class="bg-accent-green/10 text-accent-green border border-accent-green/50 hover:bg-accent-green hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Buy 1</button>
-                    <button id="sell-btn" class="bg-accent-red/10 text-accent-red border border-accent-red/50 hover:bg-accent-red hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Sell 1</button>
+            <div class="flex items-center gap-3" id="trade-actions">
+                <div id="buy-sell-controls" class="hidden flex items-center gap-3 fade-in">
+                    <div class="flex flex-col">
+                        <label class="text-[10px] text-gray-500 uppercase font-bold mb-1 ml-1 text-center">Qty</label>
+                        <input type="number" id="trade-quantity" value="1" min="1" class="w-16 bg-charcoal-900 border border-charcoal-border rounded text-center text-white py-1.5 text-xs focus:ring-1 focus:ring-accent-green focus:outline-none">
+                    </div>
+                    <div class="flex gap-2 pt-4">
+                        <button id="buy-btn" class="bg-accent-green/10 text-accent-green border border-accent-green/50 hover:bg-accent-green hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Buy</button>
+                        <button id="sell-btn" class="bg-accent-red/10 text-accent-red border border-accent-red/50 hover:bg-accent-red hover:text-charcoal-900 font-bold py-1.5 px-4 rounded transition-all text-xs uppercase tracking-widest">Sell</button>
+                    </div>
                 </div>
                 <span class="text-xs text-gray-500 italic hidden sm:block" id="trade-tip">Search for a ticker to trade</span>
             </div>

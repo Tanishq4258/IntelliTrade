@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
 from core.portfolio import Portfolio
 from services.graph_service import get_chart_base64
 from services.stock_service import get_live_price, get_stock_info, get_stock_news
 from services.ai_service import summarize_news
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 # Enable CORS for the Node.js frontend to interact seamlessly
@@ -12,7 +16,7 @@ CORS(app)
 
 # In-memory Portfolio for MVP (Simple state management for a single-user demo)
 # In production, this would be backed by a database.
-user_portfolio = Portfolio(initial_cash=10000.0, base_currency='USD')
+user_portfolio = Portfolio(initial_cash=1000000.0, base_currency='INR')
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze():
@@ -20,8 +24,9 @@ def analyze():
     symbol = data.get('symbol', 'AAPL')
     period = data.get('period', '1Y')
     indicators = data.get('indicators', [])
+    chart_type = data.get('chart_type', 'candle')
     
-    chart_img, rsi_img = get_chart_base64(symbol, period, indicators)
+    chart_img, rsi_img = get_chart_base64(symbol, period, indicators, chart_type)
     
     if chart_img is None:
         return jsonify({"error": "Failed to generate chart. Ensure symbol is valid."}), 400
